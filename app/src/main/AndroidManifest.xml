@@ -9,10 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
-
-        </activity>
-        <activity android:name=".InicioActivity">
+        <activity android:name=".actividades.FotoActivity"
+            android:label="@string/foto_activity"></activity>
+        <activity android:name=".actividades.JuegoActivity"
+            android:label="@string/juego_activity"></activity>
+        <activity android:name=".actividades.NombreActivity"
+            android:label="@string/nombre_activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
