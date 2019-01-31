@@ -31,6 +31,8 @@ public class JuegoActivity extends AppCompatActivity {
 
     public static final int NCAJAS = 12;
 
+
+
     private String obtenerNombre ()
     {
         String nombre = null;
@@ -65,6 +67,11 @@ public class JuegoActivity extends AppCompatActivity {
         //finish();
         recreate();
     }
+
+    private void mostrarNombre (String nombre)
+    {
+        getSupportActionBar().setSubtitle(nombre);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +89,8 @@ public class JuegoActivity extends AppCompatActivity {
 
 
         this.nombre_usuario = obtenerNombre();//obtengo el nombre
-        getSupportActionBar().setSubtitle(this.nombre_usuario);
+        mostrarNombre (this.nombre_usuario);
+
         this.nveces = 0;//inicio el contador de toques
         this.color_tocado = ResourcesCompat.getColor(getResources(), R.color.tocado, null);//obtengo el color
 
@@ -225,6 +233,11 @@ public class JuegoActivity extends AppCompatActivity {
                 Intent i_foto = new Intent(this, FotoActivity.class);
                 startActivity(i_foto);
                 break;
+            case R.id.ver_records:
+                Log.d("MIAPP", "Tocó hacer foto");
+                Intent i_records = new Intent(this, MostrarRecords.class);
+                startActivity(i_records);
+                break;
             case android.R.id.home:
                 Log.d("MIAPP", "Tocó ir hacia atrás");
                 super.onBackPressed();
@@ -242,9 +255,9 @@ public class JuegoActivity extends AppCompatActivity {
         {
             if (resultCode == RESULT_OK)
             {
-                String nombre_nuevo = data.getStringExtra("NOMBRE_NUEVO");
-                Preferencias.guardarNombre(nombre_nuevo, this);
-                getSupportActionBar().setSubtitle(nombre_nuevo);
+                this.nombre_usuario = data.getStringExtra("NOMBRE_NUEVO");
+                Preferencias.guardarNombre(this.nombre_usuario, this);
+                mostrarNombre(this.nombre_usuario);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
