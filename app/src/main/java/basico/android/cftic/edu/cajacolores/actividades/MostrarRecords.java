@@ -8,13 +8,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import basico.android.cftic.edu.cajacolores.AdapterPuntuaciones;
 import basico.android.cftic.edu.cajacolores.R;
 import basico.android.cftic.edu.cajacolores.dto.Puntacion;
+import basico.android.cftic.edu.cajacolores.pruebas.ComparadorPuntuaciones;
 import basico.android.cftic.edu.cajacolores.util.Preferencias;
 
 public class MostrarRecords extends AppCompatActivity {
@@ -44,6 +47,7 @@ public class MostrarRecords extends AppCompatActivity {
 
         } else {
 
+            Collections.sort(datos);
             adaptador = new AdapterPuntuaciones(datos);
             recView = (RecyclerView) findViewById(R.id.myrecycview);
             recView.setHasFixedSize(true);//opcional, si sé que el tamaño no va a cambiar
@@ -68,5 +72,12 @@ public class MostrarRecords extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void ordenarPorNombreYTiempo (View v)
+    {
+        Collections.sort(datos, new ComparadorPuntuaciones());
+        adaptador = new AdapterPuntuaciones(datos);
+        recView.setAdapter(adaptador);
     }
 }
