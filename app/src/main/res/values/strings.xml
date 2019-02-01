@@ -3,4 +3,9 @@
     <string name="juego_activity">Partida</string>
     <string name="nombre_activity">Nombre</string>
     <string name="foto_activity">Foto</string>
+    <string name="mensaje_sin_records">No hay ningún record</string>
+    <string name="record_activity">Lista records</string>
+    <string name="titulo_record_tiempo">TIEMPO</string>
+    <string name="titulo_record_nombre">NOMBRE</string>
+    <string name="titulo_record_foto">IMAGEN</string>
 </resources>

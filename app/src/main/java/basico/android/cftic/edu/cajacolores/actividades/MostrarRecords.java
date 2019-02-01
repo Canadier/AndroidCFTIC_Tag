@@ -6,6 +6,8 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,36 +24,49 @@ public class MostrarRecords extends AppCompatActivity {
 
     private AdapterPuntuaciones adaptador;
 
+    private void mostrarFlechaMenuNav ()
+    {
+        //así dibujo la flecha de navegación estandar atrás
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mostrar_records);
 
         datos = Preferencias.cargarPuntuaciones(this);
-        recView = (RecyclerView) findViewById(R.id.myrecycview);
-        //recView.setHasFixedSize(true);//opcional, si sé que el tamaño no va a cambiar
-        adaptador = new AdapterPuntuaciones(datos);
+        if (datos.size()==0)
+        {
+            setContentView(R.layout.activity_mostrar_sin_records);
+
+        } else {
+
+            adaptador = new AdapterPuntuaciones(datos);
+            recView = (RecyclerView) findViewById(R.id.myrecycview);
+            recView.setHasFixedSize(true);//opcional, si sé que el tamaño no va a cambiar
+            recView.setAdapter(adaptador);//mostrando la lista
+            recView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+            recView.addItemDecoration(
+                    new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        }
+        mostrarFlechaMenuNav();
 
 
-        recView.setAdapter(adaptador);
+    }
 
-        //recView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recView.setLayoutManager(new GridLayoutManager(this,3));
-        //StaggeredGridLayoutManager para celdas de tamaño variable
-        //recView.setLayoutManager(new StaggeredGridLayoutManager());
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                Log.d("MIAPP", "Tocó ir hacia atrás");
+                super.onBackPressed();
+                break;
+        }
 
-
-        //ITEM DECORATOR --> OPCIONAL
-
-        recView.addItemDecoration(
-                new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
-        //
-        //recView.setItemAnimator(new DefaultItemAnimator());
-
-        registerForContextMenu(recView);
-
-        // recView.setContextClickable(true);
-
+        return super.onOptionsItemSelected(item);
     }
 }

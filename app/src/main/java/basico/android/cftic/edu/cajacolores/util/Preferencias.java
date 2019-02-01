@@ -34,7 +34,7 @@ public class Preferencias {
     /**
      * Pasamos del fichero de puntuaciones a una Lista de puntuaciones
      * @param context
-     * @return
+     * @return una lista de puntaciones (vacía pero no null)
      */
     public static List<Puntacion> cargarPuntuaciones (Context context)
     {
