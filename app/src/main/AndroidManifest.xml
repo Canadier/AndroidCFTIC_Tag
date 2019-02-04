@@ -25,6 +25,7 @@
         <activity
             android:name=".actividades.MostrarRecords"
             android:label="@string/record_activity" />
+        <activity android:name=".actividades.BuenosDiasActivity"></activity>
     </application>
 
 </manifest>

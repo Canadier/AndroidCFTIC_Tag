@@ -16,6 +16,10 @@ import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.Collections;
+import java.util.List;
+
+import basico.android.cftic.edu.cajacolores.pruebas.ComparadorPuntuaciones;
 import basico.android.cftic.edu.cajacolores.util.Preferencias;
 import basico.android.cftic.edu.cajacolores.dto.Puntacion;
 import basico.android.cftic.edu.cajacolores.R;
@@ -157,6 +161,32 @@ public class JuegoActivity extends AppCompatActivity {
 
     }
 
+        private boolean mejorTiempo (long ultimo_tiempo)
+        {
+            boolean mejor_tiempo = false;
+
+                List<Puntacion> lp = Preferencias.cargarPuntuaciones(this);
+                if (lp.size()>0)
+                {
+                    Log.d("MIAPP", "la lista tiene contenido");
+                    Collections.sort(lp);//ordeno la lista por tiempos
+                    Puntacion mejor_puntuacion = lp.get(0);
+                    long mt = mejor_puntuacion.getTiempo();
+                    /*if (ultimo_tiempo<mt)
+                    {
+                        mejor_tiempo = true;
+                    } else mejor_tiempo = false;*/
+
+                    mejor_tiempo = (ultimo_tiempo<mt) ? true : false;
+
+                } else {
+                    mejor_tiempo=true;
+                }
+
+
+            return mejor_tiempo;
+
+        }
     //Informamos del tiempo con un toast y salimos
     private void cerrar (long tiempo_total, String nombre)
     {
@@ -167,6 +197,14 @@ public class JuegoActivity extends AppCompatActivity {
         reproducirFin();
         mostrarReplay();
 
+        //si ha hecho el mejor tiempo
+        //            //mostrar animación
+
+        if (mejorTiempo(tiempo_total))
+        {
+            mostrarAnimacion();
+        }
+
 
 
 
@@ -174,6 +212,13 @@ public class JuegoActivity extends AppCompatActivity {
     }
 
 
+
+    private  void mostrarAnimacion()
+    {
+        Intent intent = new Intent(this, BuenosDiasActivity.class);
+        startActivity(intent);
+
+    }
     /**
      * Ha tocado una caja la cambio de color y actualizo la cuenta
      * @param v
@@ -192,8 +237,8 @@ public class JuegoActivity extends AppCompatActivity {
                     this.tfinal = System.currentTimeMillis();//obtengo el tiempo actual
                     long total = tfinal-tinicial;//calculo el tiempo transcurrido
                     Puntacion p = new Puntacion(this.nombre_usuario, total);//creo la puntuación obtenida
-                    Preferencias.guardarRecord(p,this);//la guardo
                     cerrar(total, this.nombre_usuario);//salgo e informo
+                    Preferencias.guardarRecord(p,this);//la guardo
 
 
                 }//no ha llegado al final, luego sigo, no hago nada
