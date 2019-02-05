@@ -6,6 +6,7 @@ import android.util.Log;
 
 import basico.android.cftic.edu.cajacolores.R;
 import basico.android.cftic.edu.cajacolores.dto.Puntacion;
+import basico.android.cftic.edu.cajacolores.dto.PuntuacionParcelable;
 
 public class DetalleRecordActivity extends AppCompatActivity {
 
@@ -13,7 +14,7 @@ public class DetalleRecordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_record);
-        Puntacion p = (Puntacion) getIntent().getExtras().get("puntacion");
+        PuntuacionParcelable p = (PuntuacionParcelable) getIntent().getExtras().get("puntacion");
         Log.d("MIAPP", "Puntuacion RX " + p.toString());
     }
 }
