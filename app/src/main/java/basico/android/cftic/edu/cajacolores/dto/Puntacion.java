@@ -1,8 +1,10 @@
 package basico.android.cftic.edu.cajacolores.dto;
 
+import java.io.Serializable;
+
 import basico.android.cftic.edu.cajacolores.util.Preferencias;
 
-public class Puntacion implements Comparable{
+public class Puntacion implements Comparable, Serializable {
 
     private String nombre;
     private long tiempo;
