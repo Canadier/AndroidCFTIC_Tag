@@ -8,4 +8,5 @@
     <string name="titulo_record_tiempo">TIEMPO</string>
     <string name="titulo_record_nombre">NOMBRE</string>
     <string name="titulo_record_foto">IMAGEN</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>

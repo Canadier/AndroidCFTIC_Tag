@@ -1,8 +1,10 @@
 package basico.android.cftic.edu.cajacolores.dto;
 
+import java.io.Serializable;
+
 import basico.android.cftic.edu.cajacolores.util.Preferencias;
 
-public class Puntacion implements Comparable{
+public class Puntacion implements Comparable, Serializable {
 
     private String nombre;
     private long tiempo;
@@ -14,8 +16,8 @@ public class Puntacion implements Comparable{
         Puntacion p1 = null;
 
             p1 = (Puntacion)o;
-            //comparacion = (int)this.getTiempo()-(int)p1.getTiempo();
-            comparacion = this.nombre.compareTo(p1.nombre);
+            comparacion = (int)this.getTiempo()-(int)p1.getTiempo();
+
 
         return comparacion;
     }

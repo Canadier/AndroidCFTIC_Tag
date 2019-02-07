@@ -1,29 +1,146 @@
 package basico.android.cftic.edu.cajacolores.actividades;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.security.Permission;
+import java.security.Permissions;
 
 import basico.android.cftic.edu.cajacolores.R;
+import basico.android.cftic.edu.cajacolores.util.Preferencias;
 
 public class FotoActivity extends AppCompatActivity {
+
+
+
+    private void cargarFoto ()
+    {
+        String str_foto = Preferencias.leerFoto(this);
+        if (str_foto!=null)
+        {
+            try{
+                Uri uri = Uri.parse(str_foto);
+                //getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                Bitmap  bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);//.takePersistableUriPermission(uri,Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION)), uri);
+                ImageView imageView = (ImageView)findViewById(R.id.imageView);
+                imageView.setImageBitmap(bitmap);
+            }catch (Throwable t)
+            {
+                Log.e("MIAPP", "ERROR AL CARGAR LA FOTO", t);
+            }
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (grantResults[0]==PackageManager.PERMISSION_GRANTED) {
+            //así dibujo la flecha de navegación estandar atrás
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+            ImageView foto_circular = findViewById(R.id.imageView);//Obtengo el elemento sobre el que quiero definir el menú contextual
+            registerForContextMenu(foto_circular);//le digo que ahí va el menú
+            //  foto_circular.setOnLongClickListener();
+            cargarFoto();
+        } else {
+            Toast.makeText(this, "NO SE PUEDE EJECUTAR ESTA ACTIVIDAD ",Toast.LENGTH_LONG );
+            finish();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_foto);
 
-        //así dibujo la flecha de navegación estandar atrás
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+        } else
+        {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+            ImageView foto_circular = findViewById(R.id.imageView);//Obtengo el elemento sobre el que quiero definir el menú contextual
+            registerForContextMenu(foto_circular);//le digo que ahí va el menú
+            //  foto_circular.setOnLongClickListener();
+            cargarFoto();
+        }
+
+
+    }
+
+    //Inflo o creo el menú contextual
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater mi = getMenuInflater();
+        mi.inflate(R.menu.menu_contextual, menu);
+        menu.setHeaderTitle("Seleccione opción");
+
+    }
+
+    @Override
+    public void onContextMenuClosed(Menu menu) {
+        Log.d("MIAPP", "Context MENU CLOSED");
+        super.onContextMenuClosed(menu);
+    }
+
+    //Escuchar cuando toque una opción del menú contextual
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        Log.d("MIAPP", "TOCADO MENUCONTEXT " + item.getTitle() +
+                " " +item.getOrder());
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("¿Desea eliminar la foto")
+                .setTitle("Confirme por favor");
+
+        builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+                ImageView imageView = findViewById(R.id.imageView);
+                imageView.setImageResource(R.drawable.descarga);
+
+            }
+        });
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        return super.onContextItemSelected(item);
     }
 
     public void tomarFoto (View v)
@@ -39,7 +156,8 @@ public class FotoActivity extends AppCompatActivity {
     {
         Log.d("MIAPP", "QUIERO TOMAR UNA FOTO");
         Intent intentpidefoto = new Intent ();
-        intentpidefoto.setAction(Intent.ACTION_PICK);
+        intentpidefoto.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+        intentpidefoto.setAction(Intent.ACTION_OPEN_DOCUMENT);
         intentpidefoto.setType("image/*");//TIPO MIME
 
         startActivityForResult(intentpidefoto, 30);
@@ -75,14 +193,23 @@ public class FotoActivity extends AppCompatActivity {
             case RESULT_OK:Log.d("MIAPP", "Seleccionó foto ok");
                 Uri uri = data.getData();
                 Log.d("MIAPP", "URI = " +data.getData().toString());
+
                 try {
 
+                    if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT) {
+                        int takeFlags = data.getFlags() & Intent.FLAG_GRANT_READ_URI_PERMISSION;
+                        getContentResolver().takePersistableUriPermission(uri, takeFlags);//obtenemos permisos para leer de esa URI. Android se apunta que nosotros podemos leer desde esta actividad esta URI
+                    }
                     Bitmap  bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                     ImageView imageView = (ImageView)findViewById(R.id.imageView);
                     imageView.setImageBitmap(bitmap);
 
+
+
+                    Preferencias.guardarFoto(uri.toString(), this);
+
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e("MIAPP", "ERROR AL CARGAR LA FOTO", e);
                 }
                 break;
 

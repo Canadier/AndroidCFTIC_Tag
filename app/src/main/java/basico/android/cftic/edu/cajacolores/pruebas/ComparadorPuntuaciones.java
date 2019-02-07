@@ -8,7 +8,11 @@ public class ComparadorPuntuaciones implements Comparator<Puntacion> {
 
     @Override
     public int compare(Puntacion p1, Puntacion p2) {
-        //TODO COMPARAR
-        return 0;
+        int orden = 0;
+            orden = p1.getNombre().toLowerCase().compareTo(p2.getNombre().toLowerCase());
+            if (orden == 0){
+                orden = p1.compareTo(p2);
+            }
+        return orden;
     }
 }

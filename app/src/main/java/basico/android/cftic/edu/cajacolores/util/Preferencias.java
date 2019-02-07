@@ -29,6 +29,8 @@ public class Preferencias {
     private static final String CLAVE_CONTADOR="num_record";
     //CLAVE PARA SABER EL NOMBRE DE USUARIO EN CURSO
     private static final String CLAVE_NOMBRE_USUARIO="nombre";
+    //CLAVE PARA SABER EL NOMBRE FOTO
+    private static final String CLAVE_NOMBRE_FOTO="foto_uri";
 
 
     /**
@@ -78,6 +80,24 @@ public class Preferencias {
         SharedPreferences.Editor ed = sp.edit();
         ed.putString(CLAVE_NOMBRE_USUARIO, nombre);
         ed.commit();
+    }
+
+    public static void guardarFoto (String uri_foto, Context context)
+    {
+        SharedPreferences sp = context.getSharedPreferences(NOMBRE_FICHERO_CONTROL, Context.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putString(CLAVE_NOMBRE_FOTO, uri_foto);
+        ed.commit();
+    }
+
+    public static String leerFoto (Context context)
+    {
+        String uri_foto = null;
+
+        SharedPreferences sp = context.getSharedPreferences(NOMBRE_FICHERO_CONTROL, Context.MODE_PRIVATE);
+        uri_foto = sp.getString(CLAVE_NOMBRE_FOTO, null);
+
+        return uri_foto;
     }
 
 
