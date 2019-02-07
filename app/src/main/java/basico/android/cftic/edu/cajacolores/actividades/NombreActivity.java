@@ -1,9 +1,12 @@
 package basico.android.cftic.edu.cajacolores.actividades;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,23 +27,27 @@ public class NombreActivity extends AppCompatActivity {
     private boolean devuelta;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nombre);
 
-       if (Preferencias.primeraVez(this)) //si entra la primera vez
+
+        if (Preferencias.primeraVez(this)) //si entra la primera vez
         {
             Preferencias.marcarPrimeraVez(this); //lo marco
         }
-            else
-                {
-                    this.devuelta = getIntent().getBooleanExtra("DEVUELTA", false);
-                    if (!this.devuelta) {
-                        aJugar(); //si no, le paso directo a jugar
-                }
+        else
+        {
+            this.devuelta = getIntent().getBooleanExtra("DEVUELTA", false);
+            if (!this.devuelta) {
+                aJugar(); //si no, le paso directo a jugar
+            }
 
         }
+
+
     }
 
 
